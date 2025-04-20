@@ -17,7 +17,7 @@
 
 hotkey_combo_t hotkeys[] = {
     /* Main keyboard switching hotkey */
-    {.modifier       = HOTKEY_MODIFIER,
+    {.modifier       = 0,
      .keys           = {HOTKEY_TOGGLE},
      .key_count      = 1,
      .pass_to_os     = false,
