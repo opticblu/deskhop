@@ -190,7 +190,6 @@ void switch_virtual_desktop_macos(device_t *state, int direction) {
         .x = (direction == LEFT) ? MIN_SCREEN_COORD : MAX_SCREEN_COORD,
         .y = MAX_SCREEN_COORD / 2,
         .mode = ABSOLUTE,
-        .buttons = state->mouse_buttons,
     };
 
     uint16_t move = (direction == LEFT) ? -MACOS_SWITCH_MOVE_X : MACOS_SWITCH_MOVE_X;
