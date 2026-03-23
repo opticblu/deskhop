@@ -12,6 +12,9 @@
 #ifndef USB_DESCRIPTORS_H_
 #define USB_DESCRIPTORS_H_
 
+#include <stdbool.h>
+#include <stdint.h>
+
 // Interface 0
 #define REPORT_ID_KEYBOARD 1
 #define REPORT_ID_MOUSE    2
