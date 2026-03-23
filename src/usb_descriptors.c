@@ -79,13 +79,17 @@ bool tud_mouse_report(uint8_t mode, uint8_t buttons, int16_t x, int16_t y, int8_
     return tud_hid_n_report(ITF_NUM_HID, REPORT_ID_MOUSE, &report, sizeof(report));
 }
 
-bool tud_rel_mouse_report(int16_t x, int16_t y) {
-    rel_mouse_report_t report = {
-        .x = x,
-        .y = y
-    };
+bool tud_mouse_report(uint8_t mode, uint8_t buttons, int16_t x, int16_t y, int8_t wheel, int8_t pan) {
+    mouse_report_t report = {.buttons = buttons, .wheel = wheel, .x = x, .y = y, .mode = mode, .pan = pan};
+    uint8_t instance = ITF_NUM_HID;
+    uint8_t report_id = REPORT_ID_MOUSE;
 
-    return tud_hid_n_report(ITF_NUM_HID_REL_M, REPORT_ID_RELMOUSE, &report, sizeof(report));
+    if (mode == RELATIVE) {
+        instance = ITF_NUM_HID_REL_M;
+        report_id = REPORT_ID_RELMOUSE;
+    }
+
+    return tud_hid_n_report(instance, report_id, &report, sizeof(report));
 }
 
 
