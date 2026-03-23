@@ -180,27 +180,49 @@ void switch_to_another_pc(
 
 void switch_virtual_desktop_macos(device_t *state, int direction) {
     /*
-     * Fix for MACOS: Before sending new absolute report setting X to 0:
-     * 1. Move the cursor to the edge of the screen directly in the middle to handle screens
-     *    of different heights
-     * 2. Send relative helper movement to get the cursor onto the next screen
+     * Fix for MACOS:
+     * 1. Move the cursor to the screen edge in absolute mode
+     * 2. Then send relative helper nudges to cross onto the next screen
+     *
+     * Important: both must be sent in-order to the host.
      */
     mouse_report_t edge_position = {
         .x = (direction == LEFT) ? MIN_SCREEN_COORD : MAX_SCREEN_COORD,
         .y = MAX_SCREEN_COORD / 2,
         .mode = ABSOLUTE,
         .buttons = state->mouse_buttons,
+        .wheel = 0,
+        .pan = 0,
     };
 
     int16_t move = (direction == LEFT) ? -MACOS_SWITCH_MOVE_X : MACOS_SWITCH_MOVE_X;
 
-    output_mouse_report(&edge_position, state);
+    if (CURRENT_BOARD_IS_ACTIVE_OUTPUT) {
+        if (tud_suspended())
+            tud_remote_wakeup();
 
-    /* Once doesn't seem reliable enough, do it a few times */
-    for (int i = 0; i < MACOS_SWITCH_MOVE_COUNT; i++) {
-        if (CURRENT_BOARD_IS_ACTIVE_OUTPUT) {
+        if (!tud_hid_n_ready(ITF_NUM_HID))
+            return;
+
+        if (!tud_hid_n_ready(ITF_NUM_HID_REL_M))
+            return;
+
+        /* Send the absolute edge-position directly first */
+        tud_mouse_report(edge_position.mode,
+                         edge_position.buttons,
+                         edge_position.x,
+                         edge_position.y,
+                         edge_position.wheel,
+                         edge_position.pan);
+
+        /* Then send helper relative nudges */
+        for (int i = 0; i < MACOS_SWITCH_MOVE_COUNT; i++)
             tud_rel_mouse_report(move, 0);
-        }
+
+        state->last_activity[BOARD_ROLE] = time_us_64();
+    } else {
+        /* Fallback for non-active board path */
+        output_mouse_report(&edge_position, state);
     }
 }
 
