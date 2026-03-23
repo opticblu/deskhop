@@ -214,4 +214,6 @@ HID_COLLECTION ( HID_COLLECTION_APPLICATION )               ,\
   HID_COLLECTION_END                                        ,\
 HID_COLLECTION_END
 
+bool tud_rel_mouse_report(int16_t x, int16_t y);
+
 #endif /* USB_DESCRIPTORS_H_ */
