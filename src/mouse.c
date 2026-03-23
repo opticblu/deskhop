@@ -183,27 +183,25 @@ void switch_virtual_desktop_macos(device_t *state, int direction) {
      * Fix for MACOS: Before sending new absolute report setting X to 0:
      * 1. Move the cursor to the edge of the screen directly in the middle to handle screens
      *    of different heights
-     * 2. Send relative mouse movement one or two pixels in the direction of movement to get
-     *    the cursor onto the next screen
+     * 2. Send relative helper movement to get the cursor onto the next screen
      */
     mouse_report_t edge_position = {
         .x = (direction == LEFT) ? MIN_SCREEN_COORD : MAX_SCREEN_COORD,
         .y = MAX_SCREEN_COORD / 2,
         .mode = ABSOLUTE,
-    };
-
-    uint16_t move = (direction == LEFT) ? -MACOS_SWITCH_MOVE_X : MACOS_SWITCH_MOVE_X;
-    mouse_report_t move_relative_one = {
-        .x = move,
-        .mode = RELATIVE,
         .buttons = state->mouse_buttons,
     };
+
+    int16_t move = (direction == LEFT) ? -MACOS_SWITCH_MOVE_X : MACOS_SWITCH_MOVE_X;
 
     output_mouse_report(&edge_position, state);
 
     /* Once doesn't seem reliable enough, do it a few times */
-    for (int i = 0; i < MACOS_SWITCH_MOVE_COUNT; i++)
-        output_mouse_report(&move_relative_one, state);
+    for (int i = 0; i < MACOS_SWITCH_MOVE_COUNT; i++) {
+        if (CURRENT_BOARD_IS_ACTIVE_OUTPUT) {
+            tud_rel_mouse_report(move, 0);
+        }
+    }
 }
 
 void switch_virtual_desktop(device_t *state, output_t *output, int new_index, int direction) {
