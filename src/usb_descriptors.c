@@ -48,7 +48,6 @@ uint8_t const desc_hid_report_relmouse[] = {TUD_HID_REPORT_DESC_MOUSEHELP(HID_RE
 
 uint8_t const desc_hid_report_vendor[] = {TUD_HID_REPORT_DESC_VENDOR_CTRL(HID_REPORT_ID(REPORT_ID_VENDOR))};
 
-
 // Invoked when received GET HID REPORT DESCRIPTOR
 // Application return pointer to descriptor
 // Descriptor contents must exist long enough for transfer to complete
@@ -65,18 +64,6 @@ uint8_t const *tud_hid_descriptor_report_cb(uint8_t instance) {
         default:
             return desc_hid_report;
     }
-}
-bool tud_mouse_report(uint8_t mode, uint8_t buttons, int16_t x, int16_t y, int8_t wheel, int8_t pan) {
-    mouse_report_t report = {
-        .buttons = buttons,
-        .wheel = wheel,
-        .x = x,
-        .y = y,
-        .mode = mode,
-        .pan = pan
-    };
-
-    return tud_hid_n_report(ITF_NUM_HID, REPORT_ID_MOUSE, &report, sizeof(report));
 }
 
 bool tud_mouse_report(uint8_t mode, uint8_t buttons, int16_t x, int16_t y, int8_t wheel, int8_t pan) {
