@@ -40,6 +40,11 @@ typedef struct TU_ATTR_PACKED {
     uint8_t mode;
 } mouse_report_t;
 
+typedef struct TU_ATTR_PACKED {
+    int16_t x;
+    int16_t y;
+} rel_mouse_report_t;
+
 typedef struct {
     uint8_t tip_pressure;
     uint8_t buttons; // Digitizer buttons
