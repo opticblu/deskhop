@@ -103,24 +103,8 @@
 /* Absolute mouse, range=[0..32767] */
 #define TUD_HID_REPORT_DESC_ABS_MOUSE(...) TUD_HID_REPORT_DESC_MOUSE_COMMON(HID_ABSOLUTE, HID_LOGICAL_MIN(0), __VA_ARGS__)
 
-/* Relative helper mouse, X/Y only, no buttons/wheel/pan */
-#define TUD_HID_REPORT_DESC_RELMOUSE_ONLY(...) \
-  HID_USAGE_PAGE ( HID_USAGE_PAGE_DESKTOP )                ,\
-  HID_USAGE      ( HID_USAGE_DESKTOP_MOUSE )               ,\
-  HID_COLLECTION ( HID_COLLECTION_APPLICATION )            ,\
-    __VA_ARGS__                                            \
-    HID_USAGE      ( HID_USAGE_DESKTOP_POINTER )           ,\
-    HID_COLLECTION ( HID_COLLECTION_PHYSICAL )             ,\
-      HID_REPORT_COUNT ( 2 )                               ,\
-      HID_REPORT_SIZE  ( 16 )                              ,\
-      HID_LOGICAL_MIN_N( -32767, 2 )                       ,\
-      HID_LOGICAL_MAX_N(  32767, 2 )                       ,\
-      HID_USAGE_PAGE   ( HID_USAGE_PAGE_DESKTOP )          ,\
-      HID_USAGE        ( HID_USAGE_DESKTOP_X )             ,\
-      HID_USAGE        ( HID_USAGE_DESKTOP_Y )             ,\
-      HID_INPUT        ( HID_DATA | HID_VARIABLE | HID_RELATIVE ) ,\
-    HID_COLLECTION_END                                     ,\
-  HID_COLLECTION_END
+/* Relative mouse, range=[-32767..32767] */
+#define TUD_HID_REPORT_DESC_MOUSEHELP(...) TUD_HID_REPORT_DESC_MOUSE_COMMON(HID_RELATIVE, HID_LOGICAL_MIN_N(-32767, 2), __VA_ARGS__)
 
 // Consumer Control Report Descriptor Template
 #define TUD_HID_REPORT_DESC_CONSUMER_CTRL(...) \
